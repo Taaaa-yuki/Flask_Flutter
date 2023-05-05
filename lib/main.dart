@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lyrics_app/views/lyrics_view.dart';
+import 'package:lyrics_app/constants/color.dart';
+import 'package:lyrics_app/widgets/tabbar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,25 +14,24 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Python Lyrics',
       theme: ThemeData(
-        primarySwatch: Colors.yellow,
+        primarySwatch: AppColors.primaryColor,
       ),
-      home: const MyHomePage(title: 'Python Lyrics'),
+      debugShowCheckedModeBanner: false,
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
-    return const LyricsView();
+    return const LyricsTabBar();
   }
 }
