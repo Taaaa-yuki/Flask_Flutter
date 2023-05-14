@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lyrics_app/constants/color.dart';
-import 'package:lyrics_app/views/lyrics_view.dart';
 import 'package:lyrics_app/widgets/tabbar.dart';
 
 class LyricsAppBar extends StatelessWidget implements PreferredSizeWidget {
