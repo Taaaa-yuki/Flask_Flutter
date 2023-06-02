@@ -1,104 +1,217 @@
 import 'package:flutter/material.dart';
-import 'package:lyrics_app/constants/color.dart';
-import 'package:lyrics_app/controllers/favorite_controller.dart';
 import 'package:lyrics_app/models/favorite_model.dart';
+import 'package:lyrics_app/services/firebase_service.dart';
 import 'package:lyrics_app/widgets/appbar.dart';
 import 'package:lyrics_app/widgets/drawer.dart';
 
 class FavoriteView extends StatefulWidget {
-  const FavoriteView({super.key});
+  const FavoriteView({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _FavoriteViewState createState() => _FavoriteViewState();
+  State<FavoriteView> createState() => _FavoriteViewState();
 }
 
 class _FavoriteViewState extends State<FavoriteView> {
+  final FirebaseService _firebaseService = FirebaseService();
+  late Future<List<Album>> _albumsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _albumsFuture = _firebaseService.getAlbums();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const LyricsAppBar(title: 'Favorite Albums'),
+      appBar: const LyricsAppBar(title: "Favorite Albums"),
       drawer: const LyricsDrawer(),
       body: RefreshIndicator(
-        color: AppColors.yellow,
         onRefresh: () async {
-          setState(() {});
+          setState(() {
+            _albumsFuture = _firebaseService.getAlbums();
+          });
         },
         child: FutureBuilder<List<Album>>(
-          future: FavoriteController.getFavoriteAlbums(),
-          builder: (BuildContext context, AsyncSnapshot<List<Album>> snapshot) {
-            if (snapshot.hasData) {
-              final favoriteAlbums = snapshot.data!;
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: favoriteAlbums.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 16.0,
-                          mainAxisSpacing: 16.0,
-                          childAspectRatio: 0.7,
-                        ),
-                        itemBuilder: (context, index) {
-                          final album = favoriteAlbums[index];
-                          return Card(
-                            elevation: 4.0,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Expanded(
-                                  child: ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(4.0),
-                                      topRight: Radius.circular(4.0),
-                                    ),
-                                    child: Image.network(
-                                      album.imageUrl,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        album.title,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4.0),
-                                      Text(album.artist),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 100.0),
-                    ],
-                  ),
-                ),
-              );
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text('${snapshot.error}'),
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+          future: _albumsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
             }
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+            
+            final favoriteAlbums = snapshot.data!;
+      
+            return ListView.builder(
+              itemCount: favoriteAlbums.length,
+              itemBuilder: (context, index) {
+                final album = favoriteAlbums[index];
+      
+                return Card(
+                  child: ListTile(
+                    leading: Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(album.imageUrl)
+                        ),
+                      ),
+                    ),
+                    title: Text(album.title),
+                    subtitle: Text(album.artist),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () async {
+                            await showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                TextEditingController titleController =
+                                    TextEditingController(text: album.title);
+                                TextEditingController artistController =
+                                    TextEditingController(text: album.artist);
+                                TextEditingController imageUrlController =
+                                    TextEditingController(text: album.imageUrl);
+                                return AlertDialog(
+                                  title: const Text('Edit Album'),
+                                  content: SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        TextField(
+                                          controller: titleController,
+                                          decoration:
+                                              const InputDecoration(labelText: 'Title'),
+                                        ),
+                                        TextField(
+                                          controller: artistController,
+                                          decoration: const InputDecoration(
+                                              labelText: 'Artist'),
+                                        ),
+                                        TextField(
+                                          controller: imageUrlController,
+                                          decoration: const InputDecoration(
+                                              labelText: 'Image URL'),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: const Text('Cancel'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: const Text('Save'),
+                                      onPressed: () async {
+                                        Album updatedAlbum = Album(
+                                          id: album.id,
+                                          title: titleController.text,
+                                          artist: artistController.text,
+                                          imageUrl: imageUrlController.text,
+                                        );
+                                        await _firebaseService
+                                            .updateAlbum(updatedAlbum);
+                                        setState(() {
+                                          _albumsFuture = _firebaseService.getAlbums();
+                                        });
+                                        if(!mounted) return;
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () async {
+                            await _firebaseService.deleteAlbum(album.id);
+                            setState(() {
+                              _albumsFuture = _firebaseService.getAlbums();
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 70.0),
+        child: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () async {
+            await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                TextEditingController titleController = TextEditingController();
+                TextEditingController artistController =
+                    TextEditingController();
+                TextEditingController imageUrlController =
+                    TextEditingController();
+
+                return AlertDialog(
+                  title: const Text('Add Album'),
+                  content: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: titleController,
+                          decoration: const InputDecoration(labelText: 'Title'),
+                        ),
+                        TextField(
+                          controller: artistController,
+                          decoration: const InputDecoration(labelText: 'Artist'),
+                        ),
+                        TextField(
+                          controller: imageUrlController,
+                          decoration: const InputDecoration(labelText: 'Image URL'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text('Cancel'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      child: const Text('Save'),
+                      onPressed: () async {
+                        Album newAlbum = Album(
+                          id: '', // Generate a unique ID or use Firebase's auto-generated ID
+                          title: titleController.text,
+                          artist: artistController.text,
+                          imageUrl: imageUrlController.text,
+                        );
+                        await _firebaseService.addAlbum(newAlbum);
+                        setState(() {
+                          _albumsFuture = _firebaseService.getAlbums();
+                        });
+                        if(!mounted) return;
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
           },
         ),
       ),
