@@ -3,23 +3,27 @@ import 'package:flutter/services.dart';
 import 'package:lyrics_app/constants/color.dart';
 import 'package:lyrics_app/constants/error_messages.dart';
 import 'package:lyrics_app/controllers/lyrics_controller.dart';
+import 'package:lyrics_app/models/favorite_model.dart';
 import 'package:lyrics_app/models/lyrics_model.dart';
+import 'package:lyrics_app/services/firebase_service.dart';
 import 'package:lyrics_app/widgets/appbar.dart';
 import 'package:lyrics_app/widgets/button.dart';
 import 'package:lyrics_app/widgets/drawer.dart';
+import 'package:lyrics_app/widgets/error_popup.dart';
+import 'package:lyrics_app/widgets/floatingactionbutton.dart';
 import 'package:lyrics_app/widgets/loading.dart';
 
 class LyricsView extends StatefulWidget {
-  const LyricsView({super.key});
+  const LyricsView({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _LyricsViewState createState() => _LyricsViewState();
+  State<LyricsView> createState() => _LyricsViewState();
 }
 
 class _LyricsViewState extends State<LyricsView> {
-  final _urlController = TextEditingController();
+  final FirebaseService _firebaseService = FirebaseService();
   Future<LyricsModel>? _lyricsModel;
+  final _urlController = TextEditingController();
 
   @override
   void dispose() {
@@ -68,7 +72,8 @@ class _LyricsViewState extends State<LyricsView> {
                   ),
                   IconButton(
                     onPressed: () async {
-                      final data = await Clipboard.getData(Clipboard.kTextPlain);
+                      final data =
+                          await Clipboard.getData(Clipboard.kTextPlain);
                       if (data != null) {
                         setState(() {
                           _urlController.text = data.text!;
@@ -90,7 +95,8 @@ class _LyricsViewState extends State<LyricsView> {
                 child: MyButton(
                   onPressed: () {
                     setState(() {
-                      _lyricsModel = LyricsController.getLyrics(_urlController.text);
+                      _lyricsModel =
+                          LyricsController.getLyrics(_urlController.text);
                     });
                   },
                   text: 'Get Lyrics',
@@ -110,7 +116,8 @@ class _LyricsViewState extends State<LyricsView> {
                         ),
                       );
                     } else if (snapshot.hasError) {
-                      return const Center(child: Text(ErrorMessages.failedToGetLyrics));
+                      return const Center(
+                          child: Text(ErrorMessages.failedToGetLyrics));
                     } else if (snapshot.hasData) {
                       final lyrics = snapshot.data!;
                       return Padding(
@@ -145,7 +152,9 @@ class _LyricsViewState extends State<LyricsView> {
                         ),
                       );
                     } else {
-                      return const Center(child: Text(ErrorMessages.enterLyricsUrlAndPressButton));
+                      return const Center(
+                          child:
+                              Text(ErrorMessages.enterLyricsUrlAndPressButton));
                     }
                   },
                 ),
@@ -153,6 +162,76 @@ class _LyricsViewState extends State<LyricsView> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: CustomFloatingActionButton(
+        firebaseService: _firebaseService,
+        onAddPressed: () async {
+          final lyricsData = await _lyricsModel;
+          if (lyricsData != null) {
+            if (!mounted) return;
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                TextEditingController titleController =
+                    TextEditingController(text: lyricsData.title ?? '');
+                TextEditingController artistController =
+                    TextEditingController(text: lyricsData.artist ?? '');
+                TextEditingController imageUrlController =
+                    TextEditingController(text: lyricsData.imageUrl ?? '');
+
+                return AlertDialog(
+                  title: const Text('Add Album'),
+                  content: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: titleController,
+                          decoration: const InputDecoration(labelText: 'Title'),
+                        ),
+                        TextField(
+                          controller: artistController,
+                          decoration:
+                              const InputDecoration(labelText: 'Artist'),
+                        ),
+                        TextField(
+                          controller: imageUrlController,
+                          decoration:
+                              const InputDecoration(labelText: 'Image URL'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text('Cancel'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      child: const Text('Save'),
+                      onPressed: () async {
+                        Album newAlbum = Album(
+                          id: '',
+                          title: titleController.text,
+                          artist: artistController.text,
+                          imageUrl: imageUrlController.text,
+                        );
+                        await _firebaseService.addAlbum(newAlbum);
+                        setState(() {});
+                        if (!mounted) return;
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          } else if (lyricsData == null) {
+            if (!mounted) return;
+              ErrorPopup.show(context, 'Failed to get lyrics. Please try again.');
+          }
+        },
       ),
     );
   }

@@ -21,6 +21,7 @@ dependencies:
   flutter_native_splash: ^2.2.16
   flutter_lints: ^2.0.0
   cloud_firestore: ^4.7.1
+  firebase_core: ^2.13.1
 
 dev_dependencies:
   flutter_test:

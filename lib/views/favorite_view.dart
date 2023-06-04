@@ -3,6 +3,7 @@ import 'package:lyrics_app/models/favorite_model.dart';
 import 'package:lyrics_app/services/firebase_service.dart';
 import 'package:lyrics_app/widgets/appbar.dart';
 import 'package:lyrics_app/widgets/drawer.dart';
+import 'package:lyrics_app/widgets/floatingactionbutton.dart';
 
 class FavoriteView extends StatefulWidget {
   const FavoriteView({Key? key}) : super(key: key);
@@ -41,14 +42,14 @@ class _FavoriteViewState extends State<FavoriteView> {
             if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             }
-            
+
             final favoriteAlbums = snapshot.data!;
-      
+
             return ListView.builder(
               itemCount: favoriteAlbums.length,
               itemBuilder: (context, index) {
                 final album = favoriteAlbums[index];
-      
+
                 return Card(
                   child: ListTile(
                     leading: Container(
@@ -56,9 +57,8 @@ class _FavoriteViewState extends State<FavoriteView> {
                       height: 80,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(album.imageUrl)
-                        ),
+                            fit: BoxFit.cover,
+                            image: NetworkImage(album.imageUrl)),
                       ),
                     ),
                     title: Text(album.title),
@@ -85,8 +85,8 @@ class _FavoriteViewState extends State<FavoriteView> {
                                       children: [
                                         TextField(
                                           controller: titleController,
-                                          decoration:
-                                              const InputDecoration(labelText: 'Title'),
+                                          decoration: const InputDecoration(
+                                              labelText: 'Title'),
                                         ),
                                         TextField(
                                           controller: artistController,
@@ -120,9 +120,10 @@ class _FavoriteViewState extends State<FavoriteView> {
                                         await _firebaseService
                                             .updateAlbum(updatedAlbum);
                                         setState(() {
-                                          _albumsFuture = _firebaseService.getAlbums();
+                                          _albumsFuture =
+                                              _firebaseService.getAlbums();
                                         });
-                                        if(!mounted) return;
+                                        if (!mounted) return;
                                         Navigator.of(context).pop();
                                       },
                                     ),
@@ -150,70 +151,69 @@ class _FavoriteViewState extends State<FavoriteView> {
           },
         ),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 70.0),
-        child: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () async {
-            await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                TextEditingController titleController = TextEditingController();
-                TextEditingController artistController =
-                    TextEditingController();
-                TextEditingController imageUrlController =
-                    TextEditingController();
+      floatingActionButton: CustomFloatingActionButton(
+        firebaseService: _firebaseService,
+        onAddPressed: () async {
+          await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              TextEditingController titleController = TextEditingController();
+              TextEditingController artistController =
+                  TextEditingController();
+              TextEditingController imageUrlController =
+                  TextEditingController();
 
-                return AlertDialog(
-                  title: const Text('Add Album'),
-                  content: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        TextField(
-                          controller: titleController,
-                          decoration: const InputDecoration(labelText: 'Title'),
-                        ),
-                        TextField(
-                          controller: artistController,
-                          decoration: const InputDecoration(labelText: 'Artist'),
-                        ),
-                        TextField(
-                          controller: imageUrlController,
-                          decoration: const InputDecoration(labelText: 'Image URL'),
-                        ),
-                      ],
-                    ),
+              return AlertDialog(
+                title: const Text('Add Album'),
+                content: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: titleController,
+                        decoration: const InputDecoration(labelText: 'Title'),
+                      ),
+                      TextField(
+                        controller: artistController,
+                        decoration:
+                            const InputDecoration(labelText: 'Artist'),
+                      ),
+                      TextField(
+                        controller: imageUrlController,
+                        decoration:
+                            const InputDecoration(labelText: 'Image URL'),
+                      ),
+                    ],
                   ),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text('Cancel'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    TextButton(
-                      child: const Text('Save'),
-                      onPressed: () async {
-                        Album newAlbum = Album(
-                          id: '', // Generate a unique ID or use Firebase's auto-generated ID
-                          title: titleController.text,
-                          artist: artistController.text,
-                          imageUrl: imageUrlController.text,
-                        );
-                        await _firebaseService.addAlbum(newAlbum);
-                        setState(() {
-                          _albumsFuture = _firebaseService.getAlbums();
-                        });
-                        if(!mounted) return;
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-        ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('Cancel'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: const Text('Save'),
+                    onPressed: () async {
+                      Album newAlbum = Album(
+                        id: '',
+                        title: titleController.text,
+                        artist: artistController.text,
+                        imageUrl: imageUrlController.text,
+                      );
+                      await _firebaseService.addAlbum(newAlbum);
+                      setState(() {
+                        _albumsFuture = _firebaseService.getAlbums();
+                      });
+                      if (!mounted) return;
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
       ),
     );
   }

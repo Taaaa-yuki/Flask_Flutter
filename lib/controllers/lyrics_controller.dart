@@ -14,6 +14,7 @@ class LyricsController {
         artist: data['artist'],
         title: data['title'],
         body: data['body'],
+        imageUrl: data['photo_url'],
       );
       return lyricsModel;
     } catch (e) {
