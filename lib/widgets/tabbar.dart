@@ -3,19 +3,31 @@ import 'package:lyrics_app/constants/color.dart';
 import 'package:lyrics_app/views/account_view.dart';
 import 'package:lyrics_app/views/favorite_view.dart';
 import 'package:lyrics_app/views/home_view.dart';
-import 'package:lyrics_app/views/lyrics_view.dart';
+import 'package:lyrics_app/views/search_view.dart';
+import 'package:lyrics_app/widgets/navigation_state.dart';
 import 'package:rounded_tabbar_widget/rounded_tabbar_widget.dart';
 
+class LyricsTabBar extends StatefulWidget {
+  const LyricsTabBar({Key? key}) : super(key: key);
 
-class LyricsTabBar extends StatelessWidget {
-  const LyricsTabBar({this.currentIndex = 0, Key? key}) : super(key: key);
+  @override
+  State<LyricsTabBar> createState() => _LyricsTabBarState();
+}
 
-  final int currentIndex;
+class _LyricsTabBarState extends State<LyricsTabBar> {
+
+  void onTabSelected(int index) {
+    if (NavigationState().currentIndex != index) {
+      setState(() {
+        NavigationState().currentIndex = index;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return RoundedTabbarWidget(
-      selectedIndex: currentIndex,
+      selectedIndex: NavigationState().currentIndex,
       itemNormalColor: AppColors.black,
       itemSelectedColor: AppColors.black,
       tabBarBackgroundColor: AppColors.yellow,
@@ -27,10 +39,11 @@ class LyricsTabBar extends StatelessWidget {
       ],
       pages: const [
         HomeView(),
-        LyricsView(),
+        SearchView(),
         FavoriteView(),
         AccountView(),
       ],
+      onTabItemIndexChanged: onTabSelected,
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lyrics_app/constants/color.dart';
+import 'package:lyrics_app/widgets/navigation_state.dart';
 import 'package:lyrics_app/widgets/tabbar.dart';
 
 class LyricsAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -43,12 +44,15 @@ class LyricsAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.only(right: 8.0),
           child: IconButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LyricsTabBar(currentIndex: 1),
-                ),
-              );
+              if (NavigationState().currentIndex != 1) {
+                NavigationState().currentIndex = 1;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LyricsTabBar(),
+                  ),
+                );
+              }
             },
             icon: const Icon(
               Icons.search,
