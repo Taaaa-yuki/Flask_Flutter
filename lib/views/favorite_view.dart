@@ -4,6 +4,7 @@ import 'package:lyrics_app/services/firebase_service.dart';
 import 'package:lyrics_app/widgets/appbar.dart';
 import 'package:lyrics_app/widgets/drawer.dart';
 import 'package:lyrics_app/widgets/floatingactionbutton.dart';
+import 'package:lyrics_app/widgets/loading.dart';
 
 class FavoriteView extends StatefulWidget {
   const FavoriteView({Key? key}) : super(key: key);
@@ -37,7 +38,7 @@ class _FavoriteViewState extends State<FavoriteView> {
           future: _albumsFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: Loading());
             }
             if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');

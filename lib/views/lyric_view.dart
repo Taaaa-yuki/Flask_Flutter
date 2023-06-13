@@ -34,7 +34,7 @@ class LyricsView extends StatelessWidget {
                   },
                 ),
                 const Text(
-                  'Lyrics',
+                  'Search',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -110,7 +110,7 @@ class LyricsView extends StatelessWidget {
         firebaseService: _firebaseService,
         onAddPressed: () async {
           final lyricsData = await lyricsModel;
-          if (lyricsData != null) {
+          if (lyricsData != null && context.mounted) {
             showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -157,7 +157,9 @@ class LyricsView extends StatelessWidget {
                           imageUrl: _imageUrlController.text,
                         );
                         await _firebaseService.addAlbum(newAlbum);
-                        Navigator.of(context).pop();
+                        if (context.mounted) {
+                          Navigator.of(context).pop();
+                        }
                       },
                     ),
                   ],
