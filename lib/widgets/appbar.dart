@@ -4,9 +4,9 @@ import 'package:lyrics_app/states/navigation_state.dart';
 import 'package:lyrics_app/widgets/tabbar.dart';
 
 class LyricsAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
-
   const LyricsAppBar({Key? key, required this.title}) : super(key: key);
+  
+  final String title;
 
   @override
   Widget build(BuildContext context) {
