@@ -10,12 +10,7 @@ class LyricsController {
 
       var response = await post(Uri.parse(lyricsUrl), body: {'url': url});
       Map<String, dynamic> data = jsonDecode(response.body);
-      LyricsModel lyricsModel = LyricsModel(
-        artist: data['artist'],
-        title: data['title'],
-        body: data['body'],
-        imageUrl: data['photo_url'],
-      );
+      LyricsModel lyricsModel = LyricsModel.fromJson(data);
       return lyricsModel;
     } catch (e) {
       return throw Exception(e);

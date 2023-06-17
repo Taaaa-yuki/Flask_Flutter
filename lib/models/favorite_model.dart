@@ -13,7 +13,6 @@ class Album {
     required this.imageUrl,
   });
 
-  // Firestoreからのデータ変換
   factory Album.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return Album(
@@ -24,7 +23,6 @@ class Album {
     );
   }
 
-  // Firestoreへのデータ変換
   Map<String, dynamic> toFirestore() {
     return {
       'title': title,

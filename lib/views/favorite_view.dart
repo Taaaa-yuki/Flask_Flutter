@@ -3,6 +3,8 @@ import 'package:lyrics_app/models/favorite_model.dart';
 import 'package:lyrics_app/services/firebase_service.dart';
 import 'package:lyrics_app/widgets/appbar.dart';
 import 'package:lyrics_app/widgets/drawer.dart';
+import 'package:lyrics_app/widgets/error_popup.dart';
+import 'package:lyrics_app/constants/error_messages.dart';
 import 'package:lyrics_app/widgets/floatingactionbutton.dart';
 import 'package:lyrics_app/widgets/loading.dart';
 
@@ -45,9 +47,9 @@ class _FavoriteViewState extends State<FavoriteView> {
               if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               }
-      
+
               final favoriteAlbums = snapshot.data!;
-      
+
               return ListView.builder(
                 itemCount: favoriteAlbums.length + 1,
                 itemBuilder: (context, index) {
@@ -55,7 +57,7 @@ class _FavoriteViewState extends State<FavoriteView> {
                     return const SizedBox(height: 80);
                   }
                   final album = favoriteAlbums[index];
-      
+
                   return Card(
                     child: ListTile(
                       leading: Container(
@@ -83,7 +85,8 @@ class _FavoriteViewState extends State<FavoriteView> {
                                   TextEditingController artistController =
                                       TextEditingController(text: album.artist);
                                   TextEditingController imageUrlController =
-                                      TextEditingController(text: album.imageUrl);
+                                      TextEditingController(
+                                          text: album.imageUrl);
                                   return AlertDialog(
                                     title: const Text('Edit Album'),
                                     content: SingleChildScrollView(
@@ -123,14 +126,22 @@ class _FavoriteViewState extends State<FavoriteView> {
                                             artist: artistController.text,
                                             imageUrl: imageUrlController.text,
                                           );
-                                          await _firebaseService
-                                              .updateAlbum(updatedAlbum);
-                                          setState(() {
-                                            _albumsFuture =
-                                                _firebaseService.getAlbums();
-                                          });
-                                          if (!mounted) return;
-                                          Navigator.of(context).pop();
+                                          if (updatedAlbum.title.isNotEmpty &&
+                                              updatedAlbum.artist.isNotEmpty &&
+                                              updatedAlbum
+                                                  .imageUrl.isNotEmpty) {
+                                            await _firebaseService
+                                                .updateAlbum(updatedAlbum);
+                                            setState(() {
+                                              _albumsFuture =
+                                                  _firebaseService.getAlbums();
+                                            });
+                                            if (!mounted) return;
+                                            Navigator.of(context).pop();
+                                          } else {
+                                            ErrorPopup.show(context,
+                                                ErrorMessages.albumEmpty);
+                                          }
                                         },
                                       ),
                                     ],
@@ -165,8 +176,7 @@ class _FavoriteViewState extends State<FavoriteView> {
             context: context,
             builder: (BuildContext context) {
               TextEditingController titleController = TextEditingController();
-              TextEditingController artistController =
-                  TextEditingController();
+              TextEditingController artistController = TextEditingController();
               TextEditingController imageUrlController =
                   TextEditingController();
 
@@ -181,8 +191,7 @@ class _FavoriteViewState extends State<FavoriteView> {
                       ),
                       TextField(
                         controller: artistController,
-                        decoration:
-                            const InputDecoration(labelText: 'Artist'),
+                        decoration: const InputDecoration(labelText: 'Artist'),
                       ),
                       TextField(
                         controller: imageUrlController,
@@ -208,12 +217,16 @@ class _FavoriteViewState extends State<FavoriteView> {
                         artist: artistController.text,
                         imageUrl: imageUrlController.text,
                       );
-                      await _firebaseService.addAlbum(newAlbum);
-                      setState(() {
-                        _albumsFuture = _firebaseService.getAlbums();
-                      });
-                      if (!mounted) return;
-                      Navigator.of(context).pop();
+                      if(newAlbum.title.isNotEmpty && newAlbum.artist.isNotEmpty && newAlbum.imageUrl.isNotEmpty){
+                        await _firebaseService.addAlbum(newAlbum);
+                        setState(() {
+                          _albumsFuture = _firebaseService.getAlbums();
+                        });
+                        if (!mounted) return;
+                        Navigator.of(context).pop();
+                    } else {
+                        ErrorPopup.show(context, ErrorMessages.albumEmpty);
+                      }
                     },
                   ),
                 ],

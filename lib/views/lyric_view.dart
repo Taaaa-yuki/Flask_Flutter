@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lyrics_app/constants/error_messages.dart';
 import 'package:lyrics_app/models/favorite_model.dart';
 import 'package:lyrics_app/models/lyrics_model.dart';
 import 'package:lyrics_app/services/firebase_service.dart';
@@ -156,9 +157,15 @@ class LyricsView extends StatelessWidget {
                           artist: _artistController.text,
                           imageUrl: _imageUrlController.text,
                         );
-                        await _firebaseService.addAlbum(newAlbum);
-                        if (context.mounted) {
-                          Navigator.of(context).pop();
+                        if (newAlbum.title.isNotEmpty &&
+                            newAlbum.artist.isNotEmpty &&
+                            newAlbum.imageUrl.isNotEmpty) {
+                          await _firebaseService.addAlbum(newAlbum);
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                          }
+                        } else {
+                          ErrorPopup.show(context, ErrorMessages.albumEmpty);
                         }
                       },
                     ),
