@@ -140,7 +140,7 @@ class _FavoriteViewState extends State<FavoriteView> {
                                             Navigator.of(context).pop();
                                           } else {
                                             ErrorPopup.show(context,
-                                                ErrorMessages.albumEmpty);
+                                                ErrorMessages.albumEmpty.text);
                                           }
                                         },
                                       ),
@@ -225,7 +225,7 @@ class _FavoriteViewState extends State<FavoriteView> {
                         if (!mounted) return;
                         Navigator.of(context).pop();
                     } else {
-                        ErrorPopup.show(context, ErrorMessages.albumEmpty);
+                        ErrorPopup.show(context, ErrorMessages.albumEmpty.text);
                       }
                     },
                   ),

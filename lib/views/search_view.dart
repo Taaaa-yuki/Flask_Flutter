@@ -51,14 +51,14 @@ class _SearchViewState extends State<SearchView> {
           navigateToLyricsView(lyricsModel);
         }
       } catch (e) {
-        ErrorPopup.show(context, ErrorMessages.failedToGetLyrics);
+        ErrorPopup.show(context, ErrorMessages.failedToGetLyrics.text);
       }
 
       setState(() {
         _isLoading = false;
       });
     } else {
-      ErrorPopup.show(context, ErrorMessages.urlEmpty);
+      ErrorPopup.show(context, ErrorMessages.urlEmpty.text);
     }
   }
 

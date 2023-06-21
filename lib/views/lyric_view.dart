@@ -165,7 +165,7 @@ class LyricsView extends StatelessWidget {
                             Navigator.of(context).pop();
                           }
                         } else {
-                          ErrorPopup.show(context, ErrorMessages.albumEmpty);
+                          ErrorPopup.show(context, ErrorMessages.albumEmpty.text);
                         }
                       },
                     ),
@@ -174,7 +174,7 @@ class LyricsView extends StatelessWidget {
               },
             );
           } else {
-            ErrorPopup.show(context, 'Failed to get lyrics. Please try again.');
+            ErrorPopup.show(context, ErrorMessages.failedToGetLyrics.text);
           }
         },
       ),
