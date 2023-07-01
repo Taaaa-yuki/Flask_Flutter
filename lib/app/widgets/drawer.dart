@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lyrics_app/constants/color.dart';
+import 'package:lyrics_app/app/constants/color.dart';
 
 class LyricsDrawer extends StatelessWidget {
   const LyricsDrawer({Key? key}) : super(key: key);

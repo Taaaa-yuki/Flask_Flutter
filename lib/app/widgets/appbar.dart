@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lyrics_app/constants/color.dart';
-import 'package:lyrics_app/states/navigation_state.dart';
-import 'package:lyrics_app/widgets/tabbar.dart';
+import 'package:lyrics_app/app/constants/color.dart';
+import 'package:lyrics_app/app/states/navigation_state.dart';
+import 'package:lyrics_app/app/widgets/tabbar.dart';
 
 class LyricsAppBar extends StatelessWidget implements PreferredSizeWidget {
   const LyricsAppBar({Key? key, required this.title}) : super(key: key);

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lyrics_app/models/lyrics_model.dart';
-import 'package:lyrics_app/services/firebase_service.dart';
+import 'package:lyrics_app/app/models/lyrics_model.dart';
+import 'package:lyrics_app/app/services/firebase_service.dart';
 
 class CustomFloatingActionButton extends StatelessWidget {
   final FirebaseService firebaseService;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lyrics_app/widgets/appbar.dart';
-import 'package:lyrics_app/widgets/drawer.dart';
+import 'package:lyrics_app/app/widgets/appbar.dart';
+import 'package:lyrics_app/app/widgets/drawer.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});

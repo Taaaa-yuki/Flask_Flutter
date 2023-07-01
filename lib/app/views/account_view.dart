@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lyrics_app/widgets/appbar.dart';
-import 'package:lyrics_app/widgets/button.dart';
-import 'package:lyrics_app/widgets/drawer.dart';
+import 'package:lyrics_app/app/widgets/appbar.dart';
+import 'package:lyrics_app/app/widgets/button.dart';
+import 'package:lyrics_app/app/widgets/drawer.dart';
 
 class AccountView extends StatefulWidget {
   const AccountView({super.key});

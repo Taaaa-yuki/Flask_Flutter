@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:lyrics_app/constants/error_messages.dart';
-import 'package:lyrics_app/models/favorite_model.dart';
-import 'package:lyrics_app/models/lyrics_model.dart';
-import 'package:lyrics_app/services/firebase_service.dart';
-import 'package:lyrics_app/widgets/appbar.dart';
-import 'package:lyrics_app/widgets/drawer.dart';
-import 'package:lyrics_app/widgets/error_popup.dart';
-import 'package:lyrics_app/widgets/floatingactionbutton.dart';
-import 'package:lyrics_app/widgets/loading.dart';
+import 'package:lyrics_app/app/constants/error_messages.dart';
+import 'package:lyrics_app/app/models/favorite_model.dart';
+import 'package:lyrics_app/app/models/lyrics_model.dart';
+import 'package:lyrics_app/app/services/firebase_service.dart';
+import 'package:lyrics_app/app/widgets/appbar.dart';
+import 'package:lyrics_app/app/widgets/drawer.dart';
+import 'package:lyrics_app/app/widgets/error_popup.dart';
+import 'package:lyrics_app/app/widgets/floatingactionbutton.dart';
+import 'package:lyrics_app/app/widgets/loading.dart';
 
 class LyricsView extends StatelessWidget {
   final FirebaseService _firebaseService = FirebaseService();

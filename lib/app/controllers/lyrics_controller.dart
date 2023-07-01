@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart';
-import 'package:lyrics_app/models/lyrics_model.dart';
+import 'package:lyrics_app/app/models/lyrics_model.dart';
 
 class LyricsController {
   static Future<LyricsModel> getLyrics(String url) async {

@@ -1,4 +1,4 @@
-import 'package:lyrics_app/constants/message.dart';
+import 'package:lyrics_app/app/constants/message.dart';
 
 class ErrorMessages extends Message {
   static final failedToGetLyrics = ErrorMessages('Failed to get lyrics. \nPlease try again.');

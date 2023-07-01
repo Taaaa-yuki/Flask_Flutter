@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lyrics_app/constants/error_messages.dart';
-import 'package:lyrics_app/controllers/lyrics_controller.dart';
-import 'package:lyrics_app/models/lyrics_model.dart';
-import 'package:lyrics_app/views/lyric_view.dart';
-import 'package:lyrics_app/widgets/appbar.dart';
-import 'package:lyrics_app/widgets/button.dart';
-import 'package:lyrics_app/widgets/drawer.dart';
-import 'package:lyrics_app/widgets/error_popup.dart';
-import 'package:lyrics_app/widgets/loading.dart';
+import 'package:lyrics_app/app/constants/error_messages.dart';
+import 'package:lyrics_app/app/controllers/lyrics_controller.dart';
+import 'package:lyrics_app/app/models/lyrics_model.dart';
+import 'package:lyrics_app/app/views/lyric_view.dart';
+import 'package:lyrics_app/app/widgets/appbar.dart';
+import 'package:lyrics_app/app/widgets/button.dart';
+import 'package:lyrics_app/app/widgets/drawer.dart';
+import 'package:lyrics_app/app/widgets/error_popup.dart';
+import 'package:lyrics_app/app/widgets/loading.dart';
 
 class SearchView extends StatefulWidget {
   const SearchView({Key? key}) : super(key: key);

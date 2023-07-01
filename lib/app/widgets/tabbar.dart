@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lyrics_app/constants/color.dart';
-import 'package:lyrics_app/views/account_view.dart';
-import 'package:lyrics_app/views/favorite_view.dart';
-import 'package:lyrics_app/views/home_view.dart';
-import 'package:lyrics_app/views/search_view.dart';
-import 'package:lyrics_app/states/navigation_state.dart';
+import 'package:lyrics_app/app/constants/color.dart';
+import 'package:lyrics_app/app/views/account_view.dart';
+import 'package:lyrics_app/app/views/favorite_view.dart';
+import 'package:lyrics_app/app/views/home_view.dart';
+import 'package:lyrics_app/app/views/search_view.dart';
+import 'package:lyrics_app/app/states/navigation_state.dart';
 import 'package:rounded_tabbar_widget/rounded_tabbar_widget.dart';
 
 class LyricsTabBar extends StatefulWidget {

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:lyrics_app/models/favorite_model.dart';
+import 'package:lyrics_app/app/models/favorite_model.dart';
 
 class FirebaseService {
   final CollectionReference _favoriteCollection = FirebaseFirestore.instance.collection('albums');
