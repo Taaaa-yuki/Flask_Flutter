@@ -42,7 +42,6 @@ class _SearchViewState extends State<SearchView> {
       setState(() {
         _isLoading = true;
       });
-
       try {
         final lyricsModel = await LyricsController.getLyrics(url);
         if (lyricsModel.title.isNotEmpty &&
@@ -53,7 +52,6 @@ class _SearchViewState extends State<SearchView> {
       } catch (e) {
         ErrorPopup.show(context, ErrorMessages.failedToGetLyrics.text);
       }
-
       setState(() {
         _isLoading = false;
       });
@@ -73,44 +71,38 @@ class _SearchViewState extends State<SearchView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16.0),
-            const Text(
-              'Search for lyrics',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 24.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+             Stack(
               children: [
                 Flexible(
                   child: TextField(
                     controller: _urlController,
                     decoration: const InputDecoration(
-                      labelText: 'URL',
+                      labelText: 'Search for lyrics',
                       border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.all(16.0),
+                      contentPadding: EdgeInsets.fromLTRB(16.0, 16.0, 48.0, 16.0)
                     ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () async {
-                    final data = await Clipboard.getData(Clipboard.kTextPlain);
-                    if (data != null) {
-                      setState(() {
-                        _urlController.text = data.text!;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Copied to clipboard'),
-                          ),
-                        );
-                      });
-                    }
-                  },
-                  icon: const Icon(Icons.content_paste),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    onPressed: () async {
+                      final data = await Clipboard.getData(Clipboard.kTextPlain);
+                      if (data != null) {
+                        setState(() {
+                          _urlController.text = data.text!;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Copied to clipboard'),
+                            ),
+                          );
+                        });
+                      }
+                    },
+                    icon: const Icon(Icons.content_paste),
+                  ),
                 ),
-              ],
+              ]
             ),
             const SizedBox(height: 24.0),
             Container(
