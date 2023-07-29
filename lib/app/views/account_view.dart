@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lyrics_app/app/constants/app_text.dart';
 import 'package:lyrics_app/app/widgets/appbar.dart';
 import 'package:lyrics_app/app/widgets/button.dart';
 import 'package:lyrics_app/app/widgets/drawer.dart';
@@ -14,7 +15,7 @@ class _AccountViewState extends State<AccountView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const LyricsAppBar(title: 'Account'),
+      appBar: const LyricsAppBar(title: AppText.account),
       drawer: const LyricsDrawer(),
       body: Center(
         child: Column(

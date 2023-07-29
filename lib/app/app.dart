@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lyrics_app/app/constants/app_text.dart';
 import 'package:lyrics_app/app/constants/color.dart';
 import 'package:lyrics_app/app/widgets/tabbar.dart';
 
@@ -8,7 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Lyrics App',
+      title: AppText.appName,
       theme: ThemeData(
         primarySwatch: AppColors.primaryColor,
       ),

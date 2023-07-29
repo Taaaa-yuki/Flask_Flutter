@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lyrics_app/app/constants/app_text.dart';
 import 'package:lyrics_app/app/constants/error_messages.dart';
 import 'package:lyrics_app/app/models/favorite_model.dart';
 import 'package:lyrics_app/app/models/lyrics_model.dart';
@@ -8,6 +9,9 @@ import 'package:lyrics_app/app/widgets/drawer.dart';
 import 'package:lyrics_app/app/widgets/error_popup.dart';
 import 'package:lyrics_app/app/widgets/floatingactionbutton.dart';
 import 'package:lyrics_app/app/widgets/loading.dart';
+import 'package:lyrics_app/app/widgets/snackbar.dart';
+
+import '../constants/app_messages.dart';
 
 class LyricsView extends StatelessWidget {
   final FirebaseService _firebaseService = FirebaseService();
@@ -21,7 +25,7 @@ class LyricsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const LyricsAppBar(title: "Lyrics"),
+      appBar: const LyricsAppBar(title: AppText.lyrics),
       drawer: const LyricsDrawer(),
       body: SafeArea(
         child: Column(
@@ -48,7 +52,7 @@ class LyricsView extends StatelessWidget {
                 future: lyricsModel,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Loading();
+                    return const CustomLoading();
                   } else if (snapshot.hasError) {
                     return Center(
                         child: Text('Error loading lyrics: ${snapshot.error}'));
@@ -157,15 +161,18 @@ class LyricsView extends StatelessWidget {
                           artist: _artistController.text,
                           imageUrl: _imageUrlController.text,
                         );
-                        if (newAlbum.title.isNotEmpty &&
-                            newAlbum.artist.isNotEmpty &&
-                            newAlbum.imageUrl.isNotEmpty) {
-                          await _firebaseService.addAlbum(newAlbum);
-                          if (context.mounted) {
-                            Navigator.of(context).pop();
-                          }
-                        } else {
+                        if (newAlbum.title.isEmpty || newAlbum.artist.isEmpty || newAlbum.imageUrl.isEmpty) {
                           ErrorPopup.show(context, ErrorMessages.albumEmpty.text);
+                        } else {
+                          try {
+                            await _firebaseService.addAlbum(newAlbum);
+                            CustomSnackBar.show(context, AppMessages.addSuccess.text);
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                            }
+                          } catch (e) {
+                            CustomSnackBar.show(context, ErrorMessages.saveFailed.text);
+                          }
                         }
                       },
                     ),

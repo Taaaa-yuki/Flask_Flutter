@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lyrics_app/app/constants/app_text.dart';
 import 'package:lyrics_app/app/widgets/appbar.dart';
 import 'package:lyrics_app/app/widgets/drawer.dart';
 
@@ -13,7 +14,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const LyricsAppBar(title: 'Home'),
+      appBar: const LyricsAppBar(title: AppText.home),
       drawer: const LyricsDrawer(),
       body: Padding(
         padding: const EdgeInsets.only(bottom: 70.0),

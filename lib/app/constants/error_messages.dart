@@ -6,5 +6,9 @@ class ErrorMessages extends Message {
   static final enterLyricsUrlAndPressButton = ErrorMessages('Enter a lyrics URL and press the button to get lyrics.');
   static final albumEmpty = ErrorMessages('Please enter an album information');
 
+  static final saveFailed = ErrorMessages('Failed to save the album.Please try again.');
+  static final deleteFailed = ErrorMessages('Failed to delete the album.Please try again.');
+  static final updateFailed = ErrorMessages('Failed to update the album.Please try again.');
+
   ErrorMessages(String text) : super(text);
 }
