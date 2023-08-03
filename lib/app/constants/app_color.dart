@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 
-class AppColors {
-  static const Color yellow = Color.fromARGB(255, 255, 208, 0);
-  static const Color orange = Color.fromARGB(255, 245, 127, 23);
-  static const Color grey = Color.fromARGB(255, 224, 224, 224);
-  static const Color black = Color.fromARGB(255, 0, 0, 0);
+class AppColor {
 
-  static const MaterialColor primaryColor = MaterialColor(
+  static const Color primaryColor = Color.fromARGB(255, 255, 208, 0);
+  static const Color secondaryColor = Color.fromARGB(255, 245, 127, 23);
+  static const Color backgroundColor = Color.fromARGB(255, 224, 224, 224);
+  static const Color buttonColor = Color.fromARGB(255, 0, 0, 0);
+
+  static const Color primaryTextColor = Color.fromARGB(255, 0, 0, 0);
+  static const Color secondaryTextColor = Color.fromARGB(255, 255, 255, 255);
+
+
+  static const MaterialColor primaryColorMaterial = MaterialColor(
     _appPrimaryColorValue,
     <int, Color>{
       50: Color.fromRGBO(255, 254, 228, 1),

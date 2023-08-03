@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:lyrics_app/app/constants/app_messages.dart';
+import 'package:lyrics_app/app/constants/app_message.dart';
 import 'package:lyrics_app/app/constants/app_text.dart';
 import 'package:lyrics_app/app/models/favorite_model.dart';
+import 'package:lyrics_app/app/models/message_model.dart';
 import 'package:lyrics_app/app/services/firebase_service.dart';
-import 'package:lyrics_app/app/widgets/appbar.dart';
-import 'package:lyrics_app/app/widgets/drawer.dart';
-import 'package:lyrics_app/app/widgets/error_popup.dart';
-import 'package:lyrics_app/app/constants/error_messages.dart';
-import 'package:lyrics_app/app/widgets/floatingactionbutton.dart';
-import 'package:lyrics_app/app/widgets/loading.dart';
-import 'package:lyrics_app/app/widgets/snackbar.dart';
+import 'package:lyrics_app/app/widgets/custom_appbar_widget.dart';
+import 'package:lyrics_app/app/widgets/custom_drawer_widget.dart';
+import 'package:lyrics_app/app/widgets/custom_dialog_widget.dart';
+import 'package:lyrics_app/app/constants/error_message.dart';
+import 'package:lyrics_app/app/widgets/custom_floatingactionbutton_widget.dart';
+import 'package:lyrics_app/app/widgets/custom_loading_widget.dart';
+import 'package:lyrics_app/app/widgets/custom_snackbar_widget.dart';
 
 class FavoriteView extends StatefulWidget {
   const FavoriteView({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class FavoriteView extends StatefulWidget {
 
 class _FavoriteViewState extends State<FavoriteView> {
   final FirebaseService _firebaseService = FirebaseService();
-  late Future<List<Album>> _albumsFuture;
+  late Future<List<AlbumModel>> _albumsFuture;
 
   @override
   void initState() {
@@ -31,8 +32,8 @@ class _FavoriteViewState extends State<FavoriteView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const LyricsAppBar(title: AppText.favoriteAlbum),
-      drawer: const LyricsDrawer(),
+      appBar: const CustomAppbarWidget(title: AppText.favoriteAlbum),
+      drawer: const CustomDrawerWidget(),
       body: Padding(
         padding: const EdgeInsets.only(bottom: 70.0),
         child: RefreshIndicator(
@@ -41,11 +42,11 @@ class _FavoriteViewState extends State<FavoriteView> {
               _albumsFuture = _firebaseService.getAlbums();
             });
           },
-          child: FutureBuilder<List<Album>>(
+          child: FutureBuilder<List<AlbumModel>>(
             future: _albumsFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CustomLoading());
+                return const Center(child: CustomLoadingWidget());
               }
               if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
@@ -123,7 +124,7 @@ class _FavoriteViewState extends State<FavoriteView> {
                                       TextButton(
                                         child: const Text('Save'),
                                         onPressed: () async {
-                                          Album updatedAlbum = Album(
+                                          AlbumModel updatedAlbum = AlbumModel(
                                             id: album.id,
                                             title: titleController.text,
                                             artist: artistController.text,
@@ -132,17 +133,17 @@ class _FavoriteViewState extends State<FavoriteView> {
                                           if (updatedAlbum.title.isEmpty ||
                                               updatedAlbum.artist.isEmpty ||
                                               updatedAlbum.imageUrl.isEmpty) {
-                                            ErrorPopup.show(context,
-                                                ErrorMessages.albumEmpty.text);
+                                            CustomDialogWidget.show(context,
+                                                MessageModel(title: AppText.errorTitle ,message: ErrorMessage.emptyAlbumError.text));
                                           } else {
                                             try{
                                               await _firebaseService
                                                   .updateAlbum(updatedAlbum);
                                             } catch (e) {
-                                              ErrorPopup.show(
+                                              CustomDialogWidget.show(
                                                   context,
-                                                  ErrorMessages
-                                                      .updateFailed.text);
+                                                  MessageModel(title: AppText.errorTitle ,message: ErrorMessage
+                                                      .updateFailed.text));
                                             }
                                           }
                                         },
@@ -158,15 +159,15 @@ class _FavoriteViewState extends State<FavoriteView> {
                             onPressed: () async {
                               try {
                                 await _firebaseService.deleteAlbum(album.id);
-                                CustomSnackBar.show(
-                                    context, AppMessages.deleteSuccess.text);
+                                CustomSnackBarWidget.show(
+                                    context, AppMessage.deleteSuccess.text);
                                 setState(() {
                                   _albumsFuture =
                                       _firebaseService.getAlbums();
                                 });
                               } catch (e) {
-                                ErrorPopup.show(
-                                    context, ErrorMessages.deleteFailed.text);
+                                CustomDialogWidget.show(
+                                    context, MessageModel(title: AppText.errorTitle ,message: ErrorMessage.deleteFailed.text));
                               }
                               await _firebaseService.deleteAlbum(album.id);
                             },
@@ -181,9 +182,9 @@ class _FavoriteViewState extends State<FavoriteView> {
           ),
         ),
       ),
-      floatingActionButton: CustomFloatingActionButton(
-        firebaseService: _firebaseService,
-        onAddPressed: () async {
+      floatingActionButton: CustomFloatingactionbuttonWidget(
+        // firebaseService: _firebaseService,
+        onPressed: () async {
           await showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -223,7 +224,7 @@ class _FavoriteViewState extends State<FavoriteView> {
                   TextButton(
                     child: const Text('Save'),
                     onPressed: () async {
-                      Album newAlbum = Album(
+                      AlbumModel newAlbum = AlbumModel(
                         id: '',
                         title: titleController.text,
                         artist: artistController.text,
@@ -232,20 +233,20 @@ class _FavoriteViewState extends State<FavoriteView> {
                       if (newAlbum.title.isEmpty ||
                           newAlbum.artist.isEmpty ||
                           newAlbum.imageUrl.isEmpty) {
-                        ErrorPopup.show(context, ErrorMessages.albumEmpty.text);
+                        CustomDialogWidget.show(context, MessageModel(title: AppText.errorTitle ,message: ErrorMessage.emptyAlbumError.text));
                       } else {
                         try {
                           await _firebaseService.addAlbum(newAlbum);
-                          CustomSnackBar.show(
-                              context, AppMessages.addSuccess.text);
+                          CustomSnackBarWidget.show(
+                              context, AppMessage.addSuccess.text);
                           setState(() {
                             _albumsFuture = _firebaseService.getAlbums();
                           });
                           if (!mounted) return;
                           Navigator.of(context).pop();
                         } catch (e) {
-                          ErrorPopup.show(
-                              context, ErrorMessages.saveFailed.text);
+                          CustomDialogWidget.show(
+                              context, MessageModel(title: AppText.errorTitle ,message: ErrorMessage.saveFailed.text));
                         }
                       }
                     },

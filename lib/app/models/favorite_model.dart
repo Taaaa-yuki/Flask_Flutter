@@ -1,25 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Album {
+class AlbumModel {
   final String id;
   final String title;
   final String artist;
   final String imageUrl;
 
-  Album({
+  AlbumModel({
     required this.id,
     required this.title,
     required this.artist,
     required this.imageUrl,
   });
 
-  factory Album.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    return Album(
+  factory AlbumModel.fromFirestore(DocumentSnapshot doc) {
+    final firebaseData = doc.data() as Map<String, dynamic>;
+    return AlbumModel(
       id: doc.id,
-      title: data['title'],
-      artist: data['artist'],
-      imageUrl: data['imageUrl'],
+      title: firebaseData['title'],
+      artist: firebaseData['artist'],
+      imageUrl: firebaseData['imageUrl'],
     );
   }
 

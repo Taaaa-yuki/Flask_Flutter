@@ -4,16 +4,16 @@ import 'package:lyrics_app/app/models/favorite_model.dart';
 class FirebaseService {
   final CollectionReference _favoriteCollection = FirebaseFirestore.instance.collection('albums');
 
-  Future<List<Album>> getAlbums() async {
-    final snapshot = await _favoriteCollection.get();
-    return snapshot.docs.map((doc) => Album.fromFirestore(doc)).toList();
+  Future<List<AlbumModel>> getAlbums() async {
+    final QuerySnapshot snapshot = await _favoriteCollection.get();
+    return snapshot.docs.map((doc) => AlbumModel.fromFirestore(doc)).toList();
   }
 
-  Future<void> addAlbum(Album album) async {
+  Future<void> addAlbum(AlbumModel album) async {
     await _favoriteCollection.add(album.toFirestore());
   }
 
-  Future<void> updateAlbum(Album album) async {
+  Future<void> updateAlbum(AlbumModel album) async {
     await _favoriteCollection.doc(album.id).update(album.toFirestore());
   }
 

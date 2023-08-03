@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lyrics_app/app/constants/app_text.dart';
-import 'package:lyrics_app/app/constants/color.dart';
-import 'package:lyrics_app/app/widgets/tabbar.dart';
+import 'package:lyrics_app/app/constants/app_color.dart';
+import 'package:lyrics_app/app/widgets/custom_tabbar_widget.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: AppText.appName,
       theme: ThemeData(
-        primarySwatch: AppColors.primaryColor,
+        primarySwatch: AppColor.primaryColorMaterial
       ),
       debugShowCheckedModeBanner: false,
       home: const MyHomePage(),
@@ -29,6 +29,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return const LyricsTabBar();
+    return const CustomTabbarWidget();
   }
 }

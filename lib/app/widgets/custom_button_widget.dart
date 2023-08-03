@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lyrics_app/app/constants/color.dart';
+import 'package:lyrics_app/app/constants/app_color.dart';
 
-class MyButton extends StatelessWidget {
-  const MyButton({super.key, required this.onPressed, required this.text});
+class CustomButtonWidget extends StatelessWidget {
+  const CustomButtonWidget({super.key, required this.onPressed, required this.text});
 
   final void Function() onPressed;
   final String text;
@@ -12,8 +12,8 @@ class MyButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
-        backgroundColor: AppColors.black,
+        foregroundColor: AppColor.secondaryTextColor,
+        backgroundColor: AppColor.buttonColor,
         padding: const EdgeInsets.all(20.0),
         minimumSize: const Size(120, 0),
         shape: RoundedRectangleBorder(

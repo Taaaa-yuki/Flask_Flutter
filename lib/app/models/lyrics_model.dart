@@ -11,12 +11,12 @@ class LyricsModel {
     required this.imageUrl
   });
 
-  factory LyricsModel.fromJson(Map<String, dynamic> json) {
+  factory LyricsModel.fromJson(Map<String, dynamic> jsonData) {
     return LyricsModel(
-      artist: json['artist'],
-      title: json['title'],
-      body: json['body'],
-      imageUrl: json['photo_url'],
+      artist: jsonData['artist'],
+      title: jsonData['title'],
+      body: jsonData['body'],
+      imageUrl: jsonData['photo_url'],
     );
   }
 }

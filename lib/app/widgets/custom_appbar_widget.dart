@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lyrics_app/app/constants/color.dart';
+import 'package:lyrics_app/app/constants/app_color.dart';
 import 'package:lyrics_app/app/states/navigation_state.dart';
-import 'package:lyrics_app/app/widgets/tabbar.dart';
+import 'package:lyrics_app/app/widgets/custom_tabbar_widget.dart';
 
-class LyricsAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const LyricsAppBar({Key? key, required this.title}) : super(key: key);
+class CustomAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
+  const CustomAppbarWidget({Key? key, required this.title}) : super(key: key);
   
   final String title;
 
@@ -14,13 +14,13 @@ class LyricsAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Text(
         title,
         style: const TextStyle(
-          color: AppColors.black,
+          color: AppColor.buttonColor,
           fontWeight: FontWeight.bold,
           fontSize: 22.0,
         ),
       ),
       centerTitle: true,
-      backgroundColor: AppColors.yellow,
+      backgroundColor: AppColor.primaryColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           bottom: Radius.circular(30),
@@ -35,7 +35,7 @@ class LyricsAppBar extends StatelessWidget implements PreferredSizeWidget {
           },
           icon: const Icon(
             Icons.menu,
-            color: AppColors.black,
+            color: AppColor.buttonColor,
           ),
         ),
       ),
@@ -49,14 +49,14 @@ class LyricsAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const LyricsTabBar(),
+                    builder: (context) => const CustomTabbarWidget(),
                   ),
                 );
               }
             },
             icon: const Icon(
               Icons.search,
-              color: AppColors.black,
+              color: AppColor.buttonColor,
             ),
           ),
         ),

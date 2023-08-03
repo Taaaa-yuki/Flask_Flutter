@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lyrics_app/app/constants/color.dart';
+import 'package:lyrics_app/app/constants/app_color.dart';
 
-class LyricsDrawer extends StatelessWidget {
-  const LyricsDrawer({Key? key}) : super(key: key);
+class CustomDrawerWidget extends StatelessWidget {
+  const CustomDrawerWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class LyricsDrawer extends StatelessWidget {
             width: double.infinity,
             height: 200,
             decoration: const BoxDecoration(
-              color: AppColors.yellow,
+              color: AppColor.primaryColor,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(30),
                 bottomRight: Radius.circular(30),

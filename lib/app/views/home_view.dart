@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lyrics_app/app/constants/app_text.dart';
-import 'package:lyrics_app/app/widgets/appbar.dart';
-import 'package:lyrics_app/app/widgets/drawer.dart';
+import 'package:lyrics_app/app/widgets/custom_appbar_widget.dart';
+import 'package:lyrics_app/app/widgets/custom_drawer_widget.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -14,8 +14,8 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const LyricsAppBar(title: AppText.home),
-      drawer: const LyricsDrawer(),
+      appBar: const CustomAppbarWidget(title: AppText.home),
+      drawer: const CustomDrawerWidget(),
       body: Padding(
         padding: const EdgeInsets.only(bottom: 70.0),
         child: SingleChildScrollView(

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:lyrics_app/app/constants/app_text.dart';
-import 'package:lyrics_app/app/constants/error_messages.dart';
+import 'package:lyrics_app/app/constants/error_message.dart';
 import 'package:lyrics_app/app/models/favorite_model.dart';
 import 'package:lyrics_app/app/models/lyrics_model.dart';
+import 'package:lyrics_app/app/models/message_model.dart';
 import 'package:lyrics_app/app/services/firebase_service.dart';
-import 'package:lyrics_app/app/widgets/appbar.dart';
-import 'package:lyrics_app/app/widgets/drawer.dart';
-import 'package:lyrics_app/app/widgets/error_popup.dart';
-import 'package:lyrics_app/app/widgets/floatingactionbutton.dart';
-import 'package:lyrics_app/app/widgets/loading.dart';
-import 'package:lyrics_app/app/widgets/snackbar.dart';
+import 'package:lyrics_app/app/widgets/custom_appbar_widget.dart';
+import 'package:lyrics_app/app/widgets/custom_drawer_widget.dart';
+import 'package:lyrics_app/app/widgets/custom_dialog_widget.dart';
+import 'package:lyrics_app/app/widgets/custom_floatingactionbutton_widget.dart';
+import 'package:lyrics_app/app/widgets/custom_loading_widget.dart';
+import 'package:lyrics_app/app/widgets/custom_snackbar_widget.dart';
 
-import '../constants/app_messages.dart';
+import '../constants/app_message.dart';
 
 class LyricsView extends StatelessWidget {
   final FirebaseService _firebaseService = FirebaseService();
@@ -25,8 +26,8 @@ class LyricsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const LyricsAppBar(title: AppText.lyrics),
-      drawer: const LyricsDrawer(),
+      appBar: const CustomAppbarWidget(title: AppText.lyrics),
+      drawer: const CustomDrawerWidget(),
       body: SafeArea(
         child: Column(
           children: [
@@ -52,7 +53,7 @@ class LyricsView extends StatelessWidget {
                 future: lyricsModel,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CustomLoading();
+                    return const CustomLoadingWidget();
                   } else if (snapshot.hasError) {
                     return Center(
                         child: Text('Error loading lyrics: ${snapshot.error}'));
@@ -111,9 +112,8 @@ class LyricsView extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: CustomFloatingActionButton(
-        firebaseService: _firebaseService,
-        onAddPressed: () async {
+      floatingActionButton: CustomFloatingactionbuttonWidget(
+        onPressed: () async {
           final lyricsData = await lyricsModel;
           if (lyricsData != null && context.mounted) {
             showDialog(
@@ -124,7 +124,7 @@ class LyricsView extends StatelessWidget {
                 _imageUrlController.text = lyricsData.imageUrl;
 
                 return AlertDialog(
-                  title: const Text('Add Album'),
+                  title: const Text('Add AlbumModel'),
                   content: SingleChildScrollView(
                     child: Column(
                       children: [
@@ -155,23 +155,23 @@ class LyricsView extends StatelessWidget {
                     TextButton(
                       child: const Text('Save'),
                       onPressed: () async {
-                        Album newAlbum = Album(
+                        AlbumModel newAlbum = AlbumModel(
                           id: '',
                           title: _titleController.text,
                           artist: _artistController.text,
                           imageUrl: _imageUrlController.text,
                         );
                         if (newAlbum.title.isEmpty || newAlbum.artist.isEmpty || newAlbum.imageUrl.isEmpty) {
-                          ErrorPopup.show(context, ErrorMessages.albumEmpty.text);
+                          CustomDialogWidget.show(context, MessageModel(title: AppText.errorTitle ,message: ErrorMessage.emptyAlbumError.text));
                         } else {
                           try {
                             await _firebaseService.addAlbum(newAlbum);
-                            CustomSnackBar.show(context, AppMessages.addSuccess.text);
+                            CustomSnackBarWidget.show(context, AppMessage.addSuccess.text);
                             if (context.mounted) {
                               Navigator.of(context).pop();
                             }
                           } catch (e) {
-                            CustomSnackBar.show(context, ErrorMessages.saveFailed.text);
+                            CustomSnackBarWidget.show(context, ErrorMessage.saveFailed.text);
                           }
                         }
                       },
@@ -181,7 +181,7 @@ class LyricsView extends StatelessWidget {
               },
             );
           } else {
-            ErrorPopup.show(context, ErrorMessages.failedToGetLyrics.text);
+            CustomDialogWidget.show(context, MessageModel(title: AppText.errorTitle ,message: ErrorMessage.lyricsFetchFailed.text));
           }
         },
       ),

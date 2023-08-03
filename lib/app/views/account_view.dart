@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lyrics_app/app/constants/app_text.dart';
-import 'package:lyrics_app/app/widgets/appbar.dart';
-import 'package:lyrics_app/app/widgets/button.dart';
-import 'package:lyrics_app/app/widgets/drawer.dart';
+import 'package:lyrics_app/app/widgets/custom_appbar_widget.dart';
+import 'package:lyrics_app/app/widgets/custom_button_widget.dart';
+import 'package:lyrics_app/app/widgets/custom_drawer_widget.dart';
 
 class AccountView extends StatefulWidget {
   const AccountView({super.key});
@@ -15,8 +15,8 @@ class _AccountViewState extends State<AccountView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const LyricsAppBar(title: AppText.account),
-      drawer: const LyricsDrawer(),
+      appBar: const CustomAppbarWidget(title: AppText.account),
+      drawer: const CustomDrawerWidget(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -44,7 +44,7 @@ class _AccountViewState extends State<AccountView> {
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 32),
-            MyButton(
+            CustomButtonWidget(
               onPressed: () {},
               text: 'Logout',
             ),
