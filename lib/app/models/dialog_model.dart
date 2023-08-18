@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class MessageModel {
+class DialogModel {
   final String title;
   final String message;
   final String? actionText;
   final VoidCallback? action;
 
-  MessageModel({
+  DialogModel({
     required this.title,
     required this.message,
     this.actionText,

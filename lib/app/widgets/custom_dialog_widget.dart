@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lyrics_app/app/models/message_model.dart';
+import 'package:lyrics_app/app/models/dialog_model.dart';
 
 
 class CustomDialogWidget {
-  static void show(BuildContext context, MessageModel message) {
+  static void show(BuildContext context, DialogModel message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -13,19 +13,20 @@ class CustomDialogWidget {
           actions: <Widget>[
             if (message.actionText != null && message.action != null)
               TextButton(
-                child: Text(message.actionText!),
-                onPressed: () {
-                    message.action!();
-                    Navigator.of(context).pop();
-                },
-              ) 
-            else
-              TextButton(
-                child: const Text('OK'),
+                child: const Text('Cancel'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
+            TextButton(
+              child: Text(message.actionText ?? 'OK'),
+              onPressed: () {
+                if (message.action != null) {
+                  message.action!();
+                }
+                Navigator.of(context).pop();
+              },
+            ),
           ],
         );
       },

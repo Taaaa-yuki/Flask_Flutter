@@ -35,7 +35,7 @@ class _SearchViewState extends State<SearchView> {
       context,
       MaterialPageRoute(
         builder: (context) =>
-            LyricsView(lyricsModel: Future.value(lyricsModel)),
+            LyricsView(lyricsModel: lyricsModel),
       ),
     );
   }
@@ -45,6 +45,17 @@ class _SearchViewState extends State<SearchView> {
       _isLoading = isLoading;
     });
   }
+
+  void _pasteFromClipboard() async {
+    final data = await Clipboard.getData(Clipboard.kTextPlain);
+    if (data != null) {
+      setState(() {
+        _urlController.text = data.text!;
+        CustomSnackBarWidget.show(context, AppMessage.copyClipBoard.text);
+      });
+    }
+  }
+
 
   bool _isValidLyricsModel(LyricsModel lyricsModel) {
     return lyricsModel.title.isNotEmpty &&
@@ -66,6 +77,7 @@ class _SearchViewState extends State<SearchView> {
         }
       } catch (e) {
         showErrorMessage(context, ErrorMessage.lyricsFetchFailed.text);
+        _setLoading(false);
       }
       _setLoading(false);
     } else {
@@ -85,29 +97,18 @@ class _SearchViewState extends State<SearchView> {
           children: [
             const SizedBox(height: 16.0),
             Stack(children: [
-              Flexible(
-                child: TextField(
-                  controller: _urlController,
-                  decoration: const InputDecoration(
-                      labelText: 'Search for lyrics',
-                      border: OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.fromLTRB(16.0, 16.0, 48.0, 16.0)),
-                ),
+              TextField(
+                controller: _urlController,
+                decoration: const InputDecoration(
+                    labelText: 'Search for lyrics',
+                    border: OutlineInputBorder(),
+                    contentPadding:
+                        EdgeInsets.fromLTRB(16.0, 16.0, 48.0, 16.0)),
               ),
               Align(
                 alignment: Alignment.centerRight,
                 child: IconButton(
-                  onPressed: () async {
-                    final data = await Clipboard.getData(Clipboard.kTextPlain);
-                    if (data != null) {
-                      setState(() {
-                        _urlController.text = data.text!;
-                        CustomSnackBarWidget.show(
-                            context, AppMessage.copyClipBoard.text);
-                      });
-                    }
-                  },
+                  onPressed: _pasteFromClipboard,
                   icon: const Icon(Icons.content_paste),
                 ),
               ),

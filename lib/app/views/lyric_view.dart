@@ -1,27 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:lyrics_app/app/constants/app_message.dart';
 import 'package:lyrics_app/app/constants/app_text.dart';
 import 'package:lyrics_app/app/constants/error_message.dart';
+import 'package:lyrics_app/app/controllers/lyrics_controller.dart';
 import 'package:lyrics_app/app/models/favorite_model.dart';
 import 'package:lyrics_app/app/models/lyrics_model.dart';
-import 'package:lyrics_app/app/models/message_model.dart';
-import 'package:lyrics_app/app/services/firebase_service.dart';
+import 'package:lyrics_app/app/utils/error_helper_util.dart';
 import 'package:lyrics_app/app/widgets/custom_appbar_widget.dart';
 import 'package:lyrics_app/app/widgets/custom_drawer_widget.dart';
-import 'package:lyrics_app/app/widgets/custom_dialog_widget.dart';
-import 'package:lyrics_app/app/widgets/custom_floatingactionbutton_widget.dart';
 import 'package:lyrics_app/app/widgets/custom_loading_widget.dart';
 import 'package:lyrics_app/app/widgets/custom_snackbar_widget.dart';
-
-import '../constants/app_message.dart';
+import 'package:lyrics_app/app/widgets/lyrics_dialog_widget.dart';
 
 class LyricsView extends StatelessWidget {
-  final FirebaseService _firebaseService = FirebaseService();
-  final Future<LyricsModel>? lyricsModel;
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _artistController = TextEditingController();
-  final TextEditingController _imageUrlController = TextEditingController();
+  final LyricsModel lyricsModel;
 
-  LyricsView({Key? key, required this.lyricsModel}) : super(key: key);
+  const LyricsView({Key? key, required this.lyricsModel}) : super(key: key);
+
+  void _showLyricsDialog(BuildContext context, LyricsModel lyricsData) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return LyricsDialogWidget(
+          lyricsModel: lyricsData,
+          onPressed: (BuildContext innerContext, AlbumModel albumModel) async {
+            bool isSaved = await LyricsController.saveAlbumInfo(dialogContext, albumModel);
+            if (isSaved == true) {
+              CustomSnackBarWidget.show(innerContext, AppMessage.addSuccess.text);
+            } else {
+              showErrorMessage(innerContext, ErrorMessage.saveFailed.text);
+            }
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +63,7 @@ class LyricsView extends StatelessWidget {
             ),
             Expanded(
               child: FutureBuilder<LyricsModel>(
-                future: lyricsModel,
+                future: Future.value(lyricsModel),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CustomLoadingWidget();
@@ -112,78 +125,11 @@ class LyricsView extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: CustomFloatingactionbuttonWidget(
-        onPressed: () async {
-          final lyricsData = await lyricsModel;
-          if (lyricsData != null && context.mounted) {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                _titleController.text = lyricsData.title;
-                _artistController.text = lyricsData.artist;
-                _imageUrlController.text = lyricsData.imageUrl;
-
-                return AlertDialog(
-                  title: const Text('Add AlbumModel'),
-                  content: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        TextField(
-                          controller: _titleController,
-                          decoration: const InputDecoration(labelText: 'Title'),
-                        ),
-                        TextField(
-                          controller: _artistController,
-                          decoration:
-                              const InputDecoration(labelText: 'Artist'),
-                        ),
-                        TextField(
-                          controller: _imageUrlController,
-                          decoration:
-                              const InputDecoration(labelText: 'Image URL'),
-                        ),
-                      ],
-                    ),
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text('Cancel'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    TextButton(
-                      child: const Text('Save'),
-                      onPressed: () async {
-                        AlbumModel newAlbum = AlbumModel(
-                          id: '',
-                          title: _titleController.text,
-                          artist: _artistController.text,
-                          imageUrl: _imageUrlController.text,
-                        );
-                        if (newAlbum.title.isEmpty || newAlbum.artist.isEmpty || newAlbum.imageUrl.isEmpty) {
-                          CustomDialogWidget.show(context, MessageModel(title: AppText.errorTitle ,message: ErrorMessage.emptyAlbumError.text));
-                        } else {
-                          try {
-                            await _firebaseService.addAlbum(newAlbum);
-                            CustomSnackBarWidget.show(context, AppMessage.addSuccess.text);
-                            if (context.mounted) {
-                              Navigator.of(context).pop();
-                            }
-                          } catch (e) {
-                            CustomSnackBarWidget.show(context, ErrorMessage.saveFailed.text);
-                          }
-                        }
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
-          } else {
-            CustomDialogWidget.show(context, MessageModel(title: AppText.errorTitle ,message: ErrorMessage.lyricsFetchFailed.text));
-          }
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showLyricsDialog(context, lyricsModel);
         },
+        child: const Icon(Icons.add),
       ),
     );
   }
