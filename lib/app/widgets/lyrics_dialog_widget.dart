@@ -27,6 +27,10 @@ class _LyricsDialogWidgetState extends State<LyricsDialogWidget> {
   @override
   void initState() {
     super.initState();
+    _initializeControllers();
+  }
+
+  void _initializeControllers() {
     if (widget.lyricsModel != null) {
       titleController = TextEditingController(text: widget.lyricsModel!.title);
       artistController = TextEditingController(text: widget.lyricsModel!.artist);

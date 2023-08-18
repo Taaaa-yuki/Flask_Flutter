@@ -9,5 +9,4 @@ class AppText {
   static const String successTitle = 'Success';
   static const String infoTitle = 'Info';
   static const String warningTitle = 'Warning';
-  
 }
