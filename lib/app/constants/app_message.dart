@@ -1,4 +1,4 @@
-import 'package:lyrics_app/app/constants/message.dart';
+import 'package:lyrics_app/app/constants/base_message.dart';
 
 class AppMessage extends Message {
   static final addSuccess = AppMessage('Saved successfully');

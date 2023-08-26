@@ -76,14 +76,14 @@ class _FavoriteViewState extends State<FavoriteView> {
   void _showLyricsDialog(BuildContext context, AlbumModel? albumData) {
     Future<bool> isEditing = Future.value(albumData != null);
     LyricsModel album = _initializeAlbumModel(albumData);
-    String? albumID = albumData?.id;
+    String albumId = albumData != null ? _getAlbumId(albumData) : '';
 
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
         return LyricsDialogWidget(
           lyricsModel: album,
-          albumID: albumID,
+          albumID: albumId,
           onPressed: (BuildContext innerContext, AlbumModel albumModel) async {
             try {
               bool isUpdating = await isEditing
