@@ -16,7 +16,7 @@ class CustomTabbarWidget extends StatefulWidget {
 
 class _CustomTabbarState extends State<CustomTabbarWidget> {
 
-  void onTabSelected(int index) {
+  void _onTabSelected(int index) {
     if (NavigationState().currentIndex != index) {
       setState(() {
         NavigationState().currentIndex = index;
@@ -43,7 +43,7 @@ class _CustomTabbarState extends State<CustomTabbarWidget> {
         FavoriteView(),
         AccountView(),
       ],
-      onTabItemIndexChanged: onTabSelected,
+      onTabItemIndexChanged: _onTabSelected,
     );
   }
 }

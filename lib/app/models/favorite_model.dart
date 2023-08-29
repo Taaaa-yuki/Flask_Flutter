@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AlbumModel {
-  late final String id;
+  final String id;
   final String title;
   final String artist;
   final String imageUrl;
